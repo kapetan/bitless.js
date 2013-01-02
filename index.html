@@ -1,0 +1,93 @@
+<html>
+<head>
+	<title>Bitless</title>
+
+	<script type='text/javascript' src='/rex'>
+		window.windowURL = window.URL || window.webkitURL;
+
+		window.createBlobLink = function(name, buffer) {
+			var blob = new Blob([buffer.bytes()]);
+			var url = windowURL.createObjectURL(blob);
+			var files = document.getElementById('files');
+
+			var a = document.createElement('a');
+			a.href = url;
+			a.appendChild(document.createTextNode(name));
+			a.download = name;
+
+			files.appendChild(a);
+		};
+
+		window.onload = function() {
+			require('./lib/bitless/environment');
+			//var environment = require('./lib/browser/index');
+			var torrent = require('./lib/bitless/torrent');
+			var controller = require('./lib/bitless/controller');
+			
+			document.getElementById('torrent-file-input').onchange = function(e) {
+				var file = e.target.files[0];
+
+				if(!file) {
+					return;
+				}
+
+				var reader = new FileReader();
+
+				reader.onload = function(e) {
+					var meta = new torrent.Torrent(e.target.result);
+					var manager = window.t = controller.create(meta, { peerLimit: 2 });
+
+					var progress = document.getElementById('piece-progress');
+
+					for(var i = 0; i < meta.numberOfPieces; i++) {
+						var piece = document.createElement('div');
+						piece.className = 'piece p' + i;
+
+						progress.appendChild(piece);
+					}
+
+					manager.on('piece', function(piece) {
+						var p = document.getElementsByClassName('p' + piece.index)[0];
+						p.className += ' complete';
+					});
+					manager.on('complete', function() {
+						manager.storage.files.forEach(function(file) {
+							createBlobLink(file.basename, file._data);
+						});
+					});
+
+					manager.open();
+				};
+
+				reader.readAsArrayBuffer(file);
+			};
+		};
+	</script>
+
+	<style type='text/css'>
+		#piece-progress {
+			height: 20px;
+		}
+		.piece:first-child {
+			border-width: 1px;
+		}
+		.piece {
+			float: left;
+			border-width: 1px 1px 1px 0px;
+			border-style: solid;
+			border-color: black;
+			height: 20px;
+			width: 3px;
+		}
+		.piece.complete {
+			background-color: blue;
+		}
+	</style>
+</head>
+<body>
+	<input type='file' id='torrent-file-input'>
+
+	<div id='files'></div>
+	<div id='piece-progress'></div>
+</body>
+</html>
