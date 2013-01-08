@@ -8,7 +8,7 @@ var app = root();
 var client = bitless.create();
 
 var toJSON = function() {
-	return client.torrent.map(function(manager) {
+	return client.torrents.map(function(manager) {
 		return {
 			mode: manager.mode,
 			haves: manager.storage.haves._field,
@@ -23,14 +23,18 @@ var toJSON = function() {
 					isInterested: peer.isInterested,
 					amInterested: peer.amInterested,
 					isChoking: peer.isChoking,
-					peer.amChoking: peer.amChoking
+					amChoking: peer.amChoking
 				};
-			});
+			})
 		};
 	});
 };
 
 app.use(response_require);
+
+app.get('/.json', function(request, response) {
+	response.send(toJSON());
+});
 
 app.get('/require', response_require.script);
 app.get('/js/*', function(request, response) {
