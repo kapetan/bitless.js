@@ -4,6 +4,8 @@ var filed = require('filed');
 var path = require('path');
 var bitless = require('../lib/bitless');
 
+process.chdir(__dirname);
+
 var app = root();
 var client = bitless.create();
 
@@ -34,6 +36,21 @@ app.use(response_require);
 
 app.get('/.json', function(request, response) {
 	response.send(toJSON());
+});
+app.put('/', function(request, response) {
+	var buffer = '';
+
+	request.on('data', function(data) {
+		buffer += data.toString('binary');
+	});
+	request.on('end', function() {
+		try {
+			client.addTorrent(new Buffer(buffer, 'binary'));
+			response.send(toJSON());
+		} catch(err) {
+			response.error(400, err);
+		}
+	});
 });
 
 app.get('/require', response_require.script);

@@ -2,13 +2,44 @@
 	<head>
 		<title>Bitless</title>
 
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
 		<script type="text/javascript" src="/require"></script>
 
-		<script type="text/require">
-			
+		<script type="text/javascript">
+			$(function() {
+				var form = $('#torrent-form');
+
+				form.on('submit', function() {
+					var file = $('input[type=file]', this).get(0).files[0];
+
+					if(!file) {
+						return false;
+					}
+
+					var xhr = new XMLHttpRequest();
+
+					xhr.onload = function() {
+						if(!/2\d\d/.test(xhr.status)) {
+							console.error('Non 2xx status code ' + xhr.responseText);
+							return;
+						}
+
+						console.log(xhr.responseText);
+					};
+
+					xhr.open('PUT', '/');
+					xhr.send(file);
+
+					return false;
+				});
+			});
 		</script>
 	</head>
 	<body>
-		
+		<form id="torrent-form">
+			<input type="file">
+			<input type="submit" value="Upload">
+		</form>
 	</body>
 </html>
