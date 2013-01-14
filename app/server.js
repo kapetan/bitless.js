@@ -45,8 +45,11 @@ app.put('/', function(request, response) {
 	});
 	request.on('end', function() {
 		try {
-			client.addTorrent(new Buffer(buffer, 'binary'));
-			response.send(toJSON());
+			var torrent = client.addTorrent(new Buffer(buffer, 'binary'));
+			torrent.open(function(err) {
+				if(err) return response.error(err);
+				response.send(toJSON());
+			});
 		} catch(err) {
 			response.error(400, err);
 		}

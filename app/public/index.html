@@ -25,7 +25,7 @@
 							return;
 						}
 
-						console.log(xhr.responseText);
+						console.log(JSON.parse(xhr.responseText));
 					};
 
 					xhr.open('PUT', '/');
