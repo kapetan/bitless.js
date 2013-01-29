@@ -19,18 +19,5 @@ fs.readFile('./downloads/trusted-computing-local.torrent', function(err, data) {
 	var t = new torrent.Torrent(data);
 	var manager = new controller.create(t);
 
-	/*manager.on('peer', function(peer) {
-		peer.once('message_interested', function() {
-			console.log('----------------------------------------------');
-			peer.uploadQueue.resume();
-		});
-	});*/
-
-	/*manager.on('complete', function() {
-		manager.close(function() {
-			process.exit();
-		});
-	});*/
-
 	manager.open();
 });

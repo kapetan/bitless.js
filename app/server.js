@@ -13,7 +13,7 @@ var toJSON = function() {
 	return client.torrents.map(function(manager) {
 		return {
 			mode: manager.mode,
-			haves: manager.storage.haves._field,
+			haves: manager.storage.haves.cardinality(),
 			downloaded: manager.getDownloaded(),
 			uploaded: manager.getUploaded(),
 			peers: manager.peers.map(function(peer) {
@@ -64,4 +64,4 @@ app.get('/*', function(request, response) {
 	filed(path.join('public', request.params.glob)).pipe(response);
 });
 
-app.listen(3000);
+app.listen(parseInt(process.argv[2], 10) || 3000);
