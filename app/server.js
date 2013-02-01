@@ -64,4 +64,6 @@ app.get('/*', function(request, response) {
 	filed(path.join('public', request.params.glob)).pipe(response);
 });
 
-app.listen(parseInt(process.argv[2], 10) || 3000);
+client.open(function(err) {
+	app.listen(parseInt(process.argv[2], 10) || 3000);
+});

@@ -10,14 +10,17 @@ fs.readFile('./downloads/trusted-computing-local.torrent', function(err, data) {
 		return;
 	}
 
-	var content = fs.readFileSync('./downloads/trusted-computing/TrustedComputing_LAFKON_HIGH.mov');
-	storage.memory.open('./downloads/trusted-computing/TrustedComputing_LAFKON_HIGH.mov', '', function(_, f) {
-		f.length(content.length);
-		f.write(content);
-	});
+	if(process.argv[2] === 'read') {
+		var content = fs.readFileSync('./downloads/trusted-computing/TrustedComputing_LAFKON_HIGH.mov');
+		storage.memory.open('./downloads/trusted-computing/TrustedComputing_LAFKON_HIGH.mov', '', function(_, f) {
+			f.length(content.length);
+			f.write(content);
+		});
+	}
 
 	var t = new torrent.Torrent(data);
-	var manager = new controller.create(t);
 
-	manager.open();
+	controller.open(t, function(err, manager) {
+		// ...
+	});
 });
