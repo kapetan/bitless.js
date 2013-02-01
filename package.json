@@ -1,0 +1,14 @@
+{
+	"name": "bitless.js",
+	"version": "0.0.1",
+	"author": "Mirza Kapetanovic <mirza.kapetanovic@gmail.com>",
+	"description": "A small BitTorrent client library",
+	"main": "./lib/bitless",
+	"repository": "git://github.com/kapetan/bitless.js",
+	"keywords": ["bittorrent", "torrent", "client"],
+	"dependencies": {
+		"common": "~0.2.1",
+		"parseUri": "~1.2.3",
+		"dht-bencode": "~0.1.2"
+	}
+}
